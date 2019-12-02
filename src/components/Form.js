@@ -29,16 +29,16 @@ class Form extends Component {
 
   componentDidMount() {}
 
-  // create() {
-  //   this.props.create({
-  //     task: this.state.task,
-  //     timeValue: this.state.timeValue,
-  //   });
-  // }
-
-  async create(task){
-    await axios.post(`http://localhost:3000/api/tasks`, {name: this.state.task});
-
+  async create(task) {
+    const { year, month } = this.props;
+    const day = this.props.match.params.date * 1;
+    console.log(day, typeof day);
+    await axios.post(`http://localhost:3000/api/tasks`, {
+      name: this.state.task,
+      year,
+      month,
+      day,
+    });
   }
 
   render() {
@@ -71,7 +71,7 @@ class Form extends Component {
             value={this.state.timeValue}
             step="300"
           />
-          <button type="submit" onClick={ this.create }>
+          <button type="submit" onClick={this.create}>
             Add Task
           </button>
         </form>
@@ -81,7 +81,5 @@ class Form extends Component {
 }
 
 export default Form;
-
-
 
 //http://localhost:3000/api/${this.props.year}/${this.props.month + 1}/${this.props.match.params.date}

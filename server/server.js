@@ -13,22 +13,52 @@ app.get('/', (req, res, next) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 app.use(express.json());
-app.get('/api/tasks', async (req,res,next) => {
-  await Task.findAll().then( task => res.send(task)).catch(e => console.log(e));
+app.get('/api/tasks', async (req, res, next) => {
+  await Task.findAll()
+    .then(task => res.send(task))
+    .catch(e => console.log(e));
 });
 
-app.post('/api/tasks', async (req,res,next) => {
-  
-  // const { year, month, date } = req.params;
-  // console.log('Create Task for %s-%s-%s', year, month, date);
-  // console.log(chalk.red(req.params));
-  // console.log(req.body);
-  await Task.create(req.body).then( () => Task.findAll()).then(task => res.send(task)).catch(e => console.log(e))
-  })
+app.post('/api/tasks', async (req, res, next) => {
+  await Task.create(req.body)
+    .then(() => Task.findAll())
+    .then(task => {
+      res.statusCode = 200;
+      res.send(task);
+    })
+    .catch(e => console.log(e));
+});
 
+app.put('/api/tasks/:id', async (req, res, next) => {
+  const id = req.params.id;
+  const { name } = req.body;
+  await Task.findByPk(id)
+    .then(task => {
+      task.update({ name });
+      res.statusCode = 200;
+      res.send(task);
+    })
+    .catch(err => console.log(err));
+});
+
+app.delete('/api/tasks/:id', async (req, res, next) => {
+  const id = req.params.id;
+  await Task.destroy({
+    where: {
+      id,
+    },
+  })
+    .then(task => {
+      res.statusCode = 200;
+      res.send(task);
+    })
+    .catch(err => console.log(err));
+});
 
 syncAndSeed().then(() => {
   app.listen(PORT, () => {
-    console.log(chalk.green(`Listening on ${chalk.yellow(`http://localhost:${PORT}`)}`));
+    console.log(
+      chalk.green(`Listening on ${chalk.yellow(`http://localhost:${PORT}`)}`)
+    );
   });
 });

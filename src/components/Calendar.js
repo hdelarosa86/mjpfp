@@ -1,42 +1,45 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-import months from './dateObj';
 import { HashRouter, Route, Switch, Link, Redirect } from 'react-router-dom';
 import axios from 'axios';
 import Form from './Form';
-
-// import React, { Component } from 'react';
-// import React, { Component } from 'react';
-
-const nameOfWeekdays = [
-  'Sunday',
-  'Monday',
-  'Tuesday',
-  'Wednesday',
-  'Thursday',
-  'Friday',
-  'Saturday',
-];
+import { store } from '../redux/store';
+import { getDays, getMonth, getYear }from '../redux/actions';
+const CalendarDates = require('calendar-dates');
+const calendarDates = new CalendarDates();
 
 class Calendar extends Component {
-  constructor(props) {
+  constructor() {
     super();
-    this.state={
-
-    }
-    // this.create = this.create.bind(this);
+    this.state = store.getState();
+  }
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
+  
+  async componentDidMount() { 
+    const dt = new Date();
+    const year = dt.getFullYear();
+    const month = dt.getMonth();
+    const currentDate = new Date(year, month);
+    const days = await calendarDates.getDates(currentDate);
+    store.dispatch(getDays(days));
+    store.dispatch(getMonth(month));
+    store.dispatch(getYear(year));
+    this.unsubscribe = store.subscribe(() => {
+      this.setState(store.getState());
+    });
+    console.log('cdm: ',this.state);
   }
 
-//   async create(task){
-//     await axios.post(`http://localhost:3000/api/${this.props.year}/${this.props.month + 1}`, task).data;
-//     // const notes = [...this.state.notes, created ];
-//     // this.setState({ notes }); 
-//   }
+    componentDidUpdate(prevProps){
 
+    }
+
+  
 
   render() {
-    const { daysOfTheMonth } = this.props;
-    const { create } = this;
+      console.log('before render: ', this.state);
+      const{ daysOfTheMonth } = this.state;
     return (
       <div className="month">
         {daysOfTheMonth.map((date, index) => {
@@ -44,15 +47,25 @@ class Calendar extends Component {
             date.type === 'current' && (
               <div key={index} className="calendar-date">
                 {date.date}
+
                 <span>
                   <Link
-                    to={`/${this.props.year}/${this.props.month + 1}/${
+                    to={`/${this.state.year}/${this.state.month + 1}/${
                       date.date
                     }`}
                   >
                     +
                   </Link>
                 </span>
+                {/* {tasks.map((task, idx) => {
+                  return (
+                    task.day === date.date && (
+                      <p className={task.completed ? '' : 'not-completed'}>
+                        {task.name}
+                      </p>
+                    )
+                  );
+                })} */}
               </div>
             )
           );
@@ -60,7 +73,7 @@ class Calendar extends Component {
 
         <Route
           path={`/${this.props.year}/${this.props.month + 1}/:date`}
-          render={(props) => <Form {...this.props}  {...props}/>}
+          render={props => <Form {...this.props} {...props} />}
         />
       </div>
     );
@@ -94,3 +107,16 @@ export default Calendar;
 //     );
 //   })}
 // </div>
+
+//   async componentDidMount() {
+//     const tasks = (await axios.get('http://localhost:3000/api/tasks')).data;
+//     this.setState({
+//       tasks: tasks
+//         .filter(task => {
+//           return task.year === this.props.year;
+//         })
+//         .filter(task => {
+//           return task.month === this.props.month + 1;
+//         }),
+//     });
+//   }
