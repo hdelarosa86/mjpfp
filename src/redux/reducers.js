@@ -20,6 +20,7 @@ function reducer(state = initialState, action) {
   if (action.type === GET_YEAR) {
     state.year = action.payload;
   }
+  console.log('store: ',state)
   return state;
 }
 
