@@ -37,13 +37,11 @@ class Form extends Component {
   // }
 
   async create(task){
-    await axios.post(`http://localhost:3000/api/${this.props.year}/${this.props.month + 1}/${this.props.match.params.date}`, task).data;
-    // const notes = [...this.state.notes, created ];
-    // this.setState({ notes }); 
+    await axios.post(`http://localhost:3000/api/tasks`, {name: this.state.task});
+
   }
 
   render() {
-    console.log(this.props);
     return (
       <div>
         <h3>
@@ -83,3 +81,7 @@ class Form extends Component {
 }
 
 export default Form;
+
+
+
+//http://localhost:3000/api/${this.props.year}/${this.props.month + 1}/${this.props.match.params.date}
