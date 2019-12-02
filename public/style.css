@@ -1,0 +1,33 @@
+/* .days{
+    width: 100px;
+    height: 100px;
+    background-color: cornsilk;
+    border: 1px solid black;
+}*/
+span{
+    padding: 1rem;
+    background-color: gainsboro;
+    margin: 2rem;
+}
+
+.month {
+  width: 95%;
+  display: flex;
+  align-content: space-between;
+  flex-wrap: wrap
+}
+
+.calendar-date {
+  width: calc(90%/7);
+  height: 200px;
+  background-color: rgb(255, 253, 245);
+  border: 1px solid black;
+  padding: 1rem;
+}
+
+.not-current {
+  visibility: hidden;
+}
+.hidden{
+    display:none;
+}
