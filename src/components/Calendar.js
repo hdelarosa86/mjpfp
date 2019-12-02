@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { HashRouter, Route, Switch, Link, Redirect } from 'react-router-dom';
-import axios from 'axios';
 import Form from './Form';
 import { store } from '../redux/store';
 import { getDays, getMonth, getYear }from '../redux/actions';
@@ -15,7 +14,7 @@ class Calendar extends Component {
   componentWillUnmount() {
     this.unsubscribe();
   }
-  
+
   async componentDidMount() { 
     const dt = new Date();
     const year = dt.getFullYear();

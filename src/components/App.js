@@ -20,9 +20,15 @@ class App extends Component {
     this.prevDate = this.prevDate.bind(this);
   }
 
+ 
+  componentDidMount() {
+    this.unsubscribe = store.subscribe(() => {
+      this.setState(store.getState());
+    });
+  }
 
-  async componentDidMount() {
-
+  componentWillUnmount() {
+    this.unsubscribe();
   }
 
   async nextDate() {
