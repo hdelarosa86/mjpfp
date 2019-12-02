@@ -16,8 +16,8 @@ class App extends Component {
     super();
     this.state = store.getState();
 
-    this.nextDate = this.nextDate.bind(this);
-    this.prevDate = this.prevDate.bind(this);
+    // this.nextDate = this.nextDate.bind(this);
+    // this.prevDate = this.prevDate.bind(this);
   }
 
  
@@ -31,36 +31,6 @@ class App extends Component {
     this.unsubscribe();
   }
 
-  async nextDate() {
-    let currMonth = this.state.month;
-    let thisYearOrNah = this.state.year;
-    let nextMonth;
-    if (currMonth === 11) {
-      nextMonth = 0;
-      thisYearOrNah = thisYearOrNah + 1;
-    } else {
-      nextMonth = currMonth + 1;
-    }
-    const nextDate = new Date(thisYearOrNah, nextMonth);
-    const daysOfTheMonth = await calendarDates.getDates(nextDate);
-    this.setState({ year: thisYearOrNah, month: nextMonth, daysOfTheMonth });
-  }
-
-  async prevDate() {
-    let currMonth = this.state.month;
-    let thisYearOrNah = this.state.year;
-    let prevMonth;
-    if (currMonth === 0) {
-      prevMonth = 11;
-      thisYearOrNah = thisYearOrNah - 1;
-    } else {
-      prevMonth = currMonth - 1;
-    }
-    const prevDate = new Date(thisYearOrNah, prevMonth);
-    const daysOfTheMonth = await calendarDates.getDates(prevDate);
-    this.setState({ year: thisYearOrNah, month: prevMonth, daysOfTheMonth });
-  }
-
   render() {
     return (
       <div>
@@ -70,8 +40,8 @@ class App extends Component {
           <Route
             render={props => (
               <Nav
-                prevDate={this.prevDate}
-                nextDate={this.nextDate}
+                // prevDate={this.prevDate}
+                // nextDate={this.nextDate}
                 {...props}
                 {...this.state}
               />

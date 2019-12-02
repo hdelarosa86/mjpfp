@@ -32,7 +32,6 @@ class Form extends Component {
   async create(task) {
     const { year, month } = this.props;
     const day = this.props.match.params.date * 1;
-    console.log(day, typeof day);
     await axios.post(`http://localhost:3000/api/tasks`, {
       name: this.state.task,
       year,
@@ -81,5 +80,3 @@ class Form extends Component {
 }
 
 export default Form;
-
-//http://localhost:3000/api/${this.props.year}/${this.props.month + 1}/${this.props.match.params.date}

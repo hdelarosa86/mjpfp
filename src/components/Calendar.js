@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { HashRouter, Route, Switch, Link, Redirect } from 'react-router-dom';
+import { Route, Link } from 'react-router-dom';
 import Form from './Form';
 import { store } from '../redux/store';
-import { getDays, getMonth, getYear }from '../redux/actions';
+import { getDays, getMonth, getYear } from '../redux/actions';
 const CalendarDates = require('calendar-dates');
 const calendarDates = new CalendarDates();
 
@@ -15,7 +15,7 @@ class Calendar extends Component {
     this.unsubscribe();
   }
 
-  async componentDidMount() { 
+  async componentDidMount() {
     const dt = new Date();
     const year = dt.getFullYear();
     const month = dt.getMonth();
@@ -27,18 +27,27 @@ class Calendar extends Component {
     this.unsubscribe = store.subscribe(() => {
       this.setState(store.getState());
     });
-    console.log('cdm: ',this.state);
   }
 
-    componentDidUpdate(prevProps){
-
-    }
-
-  
+  async componentDidUpdate(prevProps) {
+    const prevPage = prevProps.match.url;
+    const currPage = this.props.match.url;
+    if( prevPage !== currPage){
+    const year = parseInt(prevProps.match.params.year)
+    const month = parseInt(prevProps.match.params.month)
+    const currentDate = new Date(year, month);
+    const days = await calendarDates.getDates(currentDate);
+    store.dispatch(getDays(days));
+    store.dispatch(getMonth(month));
+    store.dispatch(getYear(year));
+    this.unsubscribe = store.subscribe(() => {
+      this.setState(store.getState());
+    });}
+  }
 
   render() {
-      console.log('before render: ', this.state);
-      const{ daysOfTheMonth } = this.state;
+    console.log('Calendar: ', this.state);
+    const { daysOfTheMonth } = this.state;
     return (
       <div className="month">
         {daysOfTheMonth.map((date, index) => {
@@ -47,7 +56,7 @@ class Calendar extends Component {
               <div key={index} className="calendar-date">
                 {date.date}
 
-                <span>
+                <span className='add-task'>
                   <Link
                     to={`/${this.state.year}/${this.state.month + 1}/${
                       date.date
@@ -81,31 +90,6 @@ class Calendar extends Component {
 
 export default Calendar;
 
-// <div className="month">
-//   {daysOfTheMonth.map((week, idx) => {
-//     return (
-//       <div key={`week-${idx + 1}`} className="week">
-//         {week.map((day, index) => {
-//           return (
-//             <div
-//               key={`day-${index + 1}`}
-//               className={` day ${
-//                 day.type === 'current' ? 'current' : 'not-current'
-//               }`}
-//             >
-//               {day.date}
-//               <p>{nameOfWeekdays[index]}</p>
-//               <button><Link to={`/${this.state.year}/${this.state.month + 1}`} className={ location.pathname === `/companies/${company.id}` ? 'selected' : ''}>
-//                   { company.name }
-//                   </Link></button>
-
-//             </div>
-//           );
-//         })}
-//       </div>
-//     );
-//   })}
-// </div>
 
 //   async componentDidMount() {
 //     const tasks = (await axios.get('http://localhost:3000/api/tasks')).data;
